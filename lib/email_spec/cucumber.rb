@@ -1,12 +1,12 @@
 # require this in your env.rb file after you require cucumber/rails/world
 
 # Global Setup
-ActionMailer::Base.delivery_method = :test unless ActionMailer::Base.delivery_method == :activerecord
+ActionMailer::Base.delivery_method = :cache
 ActionMailer::Base.perform_deliveries = true
 
 Before do
   # Scenario setup
-  ActionMailer::Base.deliveries.clear if ActionMailer::Base.delivery_method == :test
+  ActionMailer::Base.cached_deliveries.clear 
 end
 
 After do
