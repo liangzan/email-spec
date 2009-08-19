@@ -1,7 +1,7 @@
 = Email Spec
 
 A collection of RSpec matchers and Cucumber steps to make testing emails go smoothly.
-
+This fork integrates with the "action mailer cache delivery":http://github.com/ngty/action_mailer_cache_delivery/tree/master plugin.
 
 == Setup
 
