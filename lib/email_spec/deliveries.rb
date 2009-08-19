@@ -5,15 +5,15 @@ module EmailSpec
     end
 
     def last_email_sent
-      ActionMailer::Base.deliveries.last || raise("No email has been sent!")
+      ActionMailer::Base.cached_deliveries.last || raise("No email has been sent!")
     end
 
     def reset_mailer
-      ActionMailer::Base.deliveries.clear
+      ActionMailer::Base.cached_deliveries.clear
     end
 
     def mailbox_for(address)
-      ActionMailer::Base.deliveries.select { |m| m.to.include?(address) || (m.bcc && m.bcc.include?(address)) || (m.cc && m.cc.include?(address)) }
+      ActionMailer::Base.cached_deliveries.select { |m| m.to.include?(address) || (m.bcc && m.bcc.include?(address)) || (m.cc && m.cc.include?(address)) }
     end
   end
 
