@@ -1,7 +1,7 @@
 module EmailSpec
-  module TestDeliveries
+  module CacheDeliveries
     def all_emails
-      ActionMailer::Base.deliveries
+      ActionMailer::Base.cached_deliveries
     end
 
     def last_email_sent
@@ -9,11 +9,29 @@ module EmailSpec
     end
 
     def reset_mailer
-      ActionMailer::Base.cached_deliveries.clear
+      ActionMailer::Base.clear_cache
     end
 
     def mailbox_for(address)
       ActionMailer::Base.cached_deliveries.select { |m| m.to.include?(address) || (m.bcc && m.bcc.include?(address)) || (m.cc && m.cc.include?(address)) }
+    end
+  end
+
+  module TestDeliveries
+    def all_emails
+      ActionMailer::Base.deliveries
+    end
+
+    def last_email_sent
+      ActionMailer::Base.deliveries.last || raise("No email has been sent!")
+    end
+
+    def reset_mailer
+      ActionMailer::Base.deliveries.clear
+    end
+
+    def mailbox_for(address)
+      ActionMailer::Base.deliveries.select { |m| m.to.include?(address) || (m.bcc && m.bcc.include?(address)) || (m.cc && m.cc.include?(address)) }
     end
   end
 
@@ -46,8 +64,10 @@ module EmailSpec
   module Deliveries
     if ActionMailer::Base.delivery_method == :activerecord
       include EmailSpec::ARMailerDeliveries
-    else
+    elsif ActionMailer::Base.delivery_method == :test
       include EmailSpec::TestDeliveries
+    elsif ActionMailer::Base.delivery_method == :cache
+      include EmailSpec::CacheDeliveries
     end
   end
 end
