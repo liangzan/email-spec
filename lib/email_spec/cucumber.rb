@@ -6,7 +6,11 @@ ActionMailer::Base.perform_deliveries = true
 
 Before do
   # Scenario setup
-  ActionMailer::Base.cached_deliveries.clear 
+  if ActionMailer::Base.delivery_method == :cache
+    ActionMailer::Base.clear_cache 
+  elsif ActionMailer::Base.delivery_method == :test
+    ActionMailer::Base.deliveries.clear
+  end
 end
 
 After do
